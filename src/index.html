@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>FOO</title>
+</head>
+<body>
+
+
+<button ng-click="add()">add</button>
+
+<ul>
+  <li ng-repeat="client in model.clients">
+    <button ng-click="rem($index)">&times;</button>
+    <input type="text"  ng-model="client.name "/>
+    <span ng-bind="client.name"></span>
+  </li>
+</ul>
+
+
+
+<script src="bower_components/traceur-runtime/traceur-runtime.js"></script>
+<script src="bower_components/es6-module-loader/dist/es6-module-loader.js"></script>
+<script src="bower_components/system.js/dist/system.js"></script>
+<script src="bower_components/observe-js/src/observe.js"></script>
+<script src="bower_components/json-patch/jsonpatch.js"></script>
+<script src="bower_components/lodash/dist/lodash.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/immutable/dist/Immutable.js"></script>
+<script>
+  System.import('tmp/js/index')
+    .then(function () {
+      var app = angular.module('app', ['bob.source'])
+        .run(function (storage, $rootScope) {
+          var i = 0;
+          $rootScope.model = storage.store;
+
+
+          $rootScope.add = function () {
+            if (!storage.store.clients) {
+              storage.store.clients = [];
+            }
+            storage.store.clients.push({ name: ++i});
+          }
+
+          $rootScope.rem = function (index) {
+            storage.store.clients.splice(index, 1);
+          }
+        })
+      angular.bootstrap(document, [app.name]);
+    })
+    .catch(console.error.bind(console));
+</script>
+</body>
+</html>
